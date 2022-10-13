@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.40.0 -->
+<interface>
+  <requires lib="gtk+" version="3.22"/>
+  <object class="GtkAboutDialog" id="vm-about">
+    <property name="can-focus">False</property>
+    <property name="destroy-with-parent">True</property>
+    <property name="type-hint">dialog</property>
+    <property name="program-name">Xen Virtual Machine Manager</property>
+    <property name="copyright" translatable="yes">Copyright (C) 2021-2022 Xen-gui Inc.</property>
+    <property name="comments" translatable="yes">Software to manage and configure xen virtual machines</property>
+    <property name="website">https://xen-gui.org/</property>
+    <property name="website-label">https://xen-gui.org/</property>
+    <property name="authors">Jose Daniel Fuentes Garcia</property>
+    <property name="translator-credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">translator-credits</property>
+    <property name="artists">
+</property>
+    <property name="logo-icon-name">emblem-system</property>
+    <property name="license-type">gpl-2-0</property>
+    <signal name="delete-event" handler="on_vm_about_delete_event" swapped="no"/>
+    <signal name="response" handler="on_vm_about_response" swapped="no"/>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="dialog-vbox1">
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area1">
+            <property name="can-focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack-type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
