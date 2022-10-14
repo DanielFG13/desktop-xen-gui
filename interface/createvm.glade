@@ -12,6 +12,16 @@
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="adjustment_disk">
+    <property name="upper">999</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment_swap">
+    <property name="upper">9999</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkWindow" id="vm-create">
     <property name="width-request">500</property>
     <property name="height-request">500</property>
@@ -182,13 +192,12 @@
                                     <property name="spacing">3</property>
                                     <child>
                                       <object class="GtkRadioButton" id="inst-method-deb">
-                                        <property name="label" translatable="yes">debootstrap</property>
+                                        <property name="label" translatable="yes">deboostrap</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">True</property>
                                         <property name="receives-default">False</property>
                                         <property name="halign">start</property>
                                         <property name="use-underline">True</property>
-                                        <property name="active">True</property>
                                         <property name="draw-indicator">True</property>
                                         <signal name="toggled" handler="on_inst_method_changed" swapped="no"/>
                                       </object>
@@ -343,7 +352,16 @@
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
                                             <child>
-                                              <placeholder/>
+                                              <object class="GtkEntry" id="uri-file">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="editable">False</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">True</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
                                             </child>
                                           </object>
                                           <packing>
@@ -353,17 +371,11 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkButton" id="install-tar-browse">
-                                            <property name="label" translatable="yes">Bro_wse...</property>
+                                          <object class="GtkFileChooserButton" id="tar-file">
                                             <property name="visible">True</property>
-                                            <property name="can-focus">True</property>
-                                            <property name="receives-default">True</property>
-                                            <property name="use-underline">True</property>
-                                            <child internal-child="accessible">
-                                              <object class="AtkObject" id="install-tar-browse-atkobject">
-                                                <property name="AtkObject::accessible-name">install-iso-browse</property>
-                                              </object>
-                                            </child>
+                                            <property name="can-focus">False</property>
+                                            <property name="title" translatable="yes"/>
+                                            <signal name="file-set" handler="on_tar_file_set" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -401,15 +413,61 @@
                               <object class="GtkBox" id="vbox10">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
+                                <property name="margin-top">1</property>
                                 <property name="orientation">vertical</property>
                                 <property name="spacing">6</property>
                                 <child>
-                                  <object class="GtkLabel" id="label23">
+                                  <object class="GtkBox" id="box1">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Provide the operating system install U_RL:</property>
-                                    <property name="use-underline">True</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <!-- n-columns=2 n-rows=1 -->
+                                      <object class="GtkGrid" id="startup-error-box">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="halign">start</property>
+                                        <property name="valign">start</property>
+                                        <property name="column-spacing">6</property>
+                                        <child>
+                                          <object class="GtkImage" id="image1">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">start</property>
+                                            <property name="hexpand">False</property>
+                                            <property name="icon-name">dialog-warning</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left-attach">0</property>
+                                            <property name="top-attach">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel" id="startup-error">
+                                            <property name="visible">True</property>
+                                            <property name="can-focus">False</property>
+                                            <property name="halign">start</property>
+                                            <property name="valign">start</property>
+                                            <property name="hexpand">False</property>
+                                            <property name="label">Only valid when using with the following methods:
+* deboostrap
+* cdeboostrap</property>
+                                            <property name="wrap">True</property>
+                                            <property name="max-width-chars">45</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left-attach">1</property>
+                                            <property name="top-attach">0</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -425,22 +483,12 @@
                                     <property name="row-spacing">4</property>
                                     <property name="column-spacing">6</property>
                                     <child>
-                                      <object class="GtkComboBox" id="install-url-combo">
+                                      <object class="GtkLabel" id="label3">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
-                                        <property name="valign">center</property>
-                                        <property name="hexpand">True</property>
-                                        <property name="has-entry">True</property>
-                                        <child internal-child="entry">
-                                          <object class="GtkEntry">
-                                            <property name="can-focus">False</property>
-                                          </object>
-                                        </child>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="install-url-combo-atkobject">
-                                            <property name="AtkObject::accessible-name">install-url-combo</property>
-                                          </object>
-                                        </child>
+                                        <property name="halign">start</property>
+                                        <property name="label" translatable="yes">Provide the operating system install U_RL:</property>
+                                        <property name="use-underline">True</property>
                                       </object>
                                       <packing>
                                         <property name="left-attach">0</property>
@@ -454,6 +502,32 @@
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
+                                <child>
+                                  <object class="GtkComboBox" id="install-url-combo">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">False</property>
+                                    <property name="valign">center</property>
+                                    <property name="hexpand">True</property>
+                                    <property name="has-entry">True</property>
+                                    <signal name="changed" handler="on_combobox_changed" swapped="no"/>
+                                    <child internal-child="entry">
+                                      <object class="GtkEntry" id="entry_combobox">
+                                        <property name="can-focus">True</property>
+                                        <property name="editable">False</property>
+                                      </object>
+                                    </child>
+                                    <child internal-child="accessible">
+                                      <object class="AtkObject" id="install-url-combo-atkobject">
+                                        <property name="AtkObject::accessible-name">install-url-combo</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
                               </object>
                               <packing>
                                 <property name="position">1</property>
@@ -463,7 +537,7 @@
                               <object class="GtkLabel" id="label19">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
-                                <property name="label" translatable="yes">URL</property>
+                                <property name="label" translatable="yes">Mirror URL</property>
                               </object>
                               <packing>
                                 <property name="position">1</property>
@@ -570,6 +644,7 @@
                                         <property name="width-chars">7</property>
                                         <property name="adjustment">adjustment3</property>
                                         <property name="climb-rate">1</property>
+                                        <signal name="value-changed" handler="on_ram_spin_number_change" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -578,7 +653,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="phys-mem-label">
+                                      <object class="GtkLabel" id="ram-label">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="halign">start</property>
@@ -611,6 +686,7 @@
                                         <property name="width-chars">7</property>
                                         <property name="adjustment">adjustment2</property>
                                         <property name="climb-rate">1</property>
+                                        <signal name="value-changed" handler="on_cpus_spin_number_change" swapped="no"/>
                                         <child internal-child="accessible">
                                           <object class="AtkObject" id="cpus-atkobject">
                                             <property name="AtkObject::accessible-name">cpus</property>
@@ -624,7 +700,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="phys-cpu-label">
+                                      <object class="GtkLabel" id="cpu-label">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="halign">start</property>
@@ -734,13 +810,13 @@
                                         <property name="can-focus">True</property>
                                         <property name="halign">start</property>
                                         <property name="width-chars">7</property>
-                                        <property name="text" translatable="yes">0</property>
-                                        <property name="adjustment">adjustment3</property>
+                                        <property name="adjustment">adjustment_disk</property>
                                         <property name="climb-rate">1</property>
+                                        <signal name="value-changed" handler="on_disk_spin_number_change" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
-                                        <property name="fill">True</property>
+                                        <property name="fill">False</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
@@ -776,18 +852,13 @@
                                         <property name="can-focus">True</property>
                                         <property name="halign">start</property>
                                         <property name="width-chars">7</property>
-                                        <property name="text" translatable="yes">0</property>
-                                        <property name="adjustment">adjustment2</property>
+                                        <property name="adjustment">adjustment_swap</property>
                                         <property name="climb-rate">1</property>
-                                        <child internal-child="accessible">
-                                          <object class="AtkObject" id="swap-atkobject">
-                                            <property name="AtkObject::accessible-name">cpus</property>
-                                          </object>
-                                        </child>
+                                        <signal name="value-changed" handler="on_swap_spin_number_change" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
-                                        <property name="fill">True</property>
+                                        <property name="fill">False</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
@@ -820,6 +891,7 @@
                       <object class="GtkLabel" id="page-storage">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="halign">start</property>
                         <property name="label" translatable="yes">Storage</property>
                       </object>
                       <packing>
@@ -1171,10 +1243,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="create-back">
-                    <property name="label" translatable="yes">_Back</property>
+                  <object class="GtkButton" id="create-forward1">
+                    <property name="label" translatable="yes">Back</property>
                     <property name="visible">True</property>
-                    <property name="sensitive">False</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <property name="use-underline">True</property>
@@ -1183,7 +1254,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">2</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>

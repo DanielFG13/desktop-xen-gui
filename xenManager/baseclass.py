@@ -46,15 +46,19 @@ class AppWindow(Gtk.ApplicationWindow):
                                     })
 
         self.show()
-        
+  
+  
+    ################
+    # UI LISTENERS #
+    ################
+      
     def show(self):
         self.main_window.show_all()
         Gtk.main()
         
     def close(self):
         self.main_window.close()
-      
-        
+    
     def on_menu_help_about_activate(self, widget):
         from about import vmAbout
         vmAbout()

@@ -1,4 +1,3 @@
-from curses import window
 import gi
 gi.require_version("Gtk", "3.0")
 
@@ -22,6 +21,10 @@ class vmAbout():
             "on_vm_about_response": self.close,
             "on_vm_btn_close": self.close,
         })
+
+    ################
+    # UI LISTENERS #
+    ################
 
     def show(self):
         self.window.show_all()
