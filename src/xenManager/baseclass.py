@@ -1,6 +1,7 @@
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
+import os
 
 class AppWindow(Gtk.ApplicationWindow):
     
@@ -12,7 +13,7 @@ class AppWindow(Gtk.ApplicationWindow):
 
         # Here all the widgets and a button to open the second window
         self.builder = Gtk.Builder()
-        self.builder.add_from_file("/home/josefuentes/finalProjectGenome/interface/vmPanel.glade")
+        self.builder.add_from_file(os.getcwd() + "/src/interface/vmPanel.glade")
         self.main_window = self.builder.get_object("vm-manager")
   
         self.builder.connect_signals({

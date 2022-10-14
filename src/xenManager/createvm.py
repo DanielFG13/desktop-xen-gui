@@ -6,6 +6,13 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
   
+import sys
+import os
+from os import path
+sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+
+from utils.systeminfo import SystemInfo 
+
 ############
 # CONTANTS #
 ############
@@ -24,6 +31,8 @@ class VmCreate():
     ram_label = None
     cpu_label = None
     memory_label = None
+    vm = None
+    root_passwd = None
     
     #user selection/input
     method = 'deboostrap'
@@ -33,11 +42,15 @@ class VmCreate():
     cpus = None
     disk = None
     swap = None
+    ip = None
+    mac = None
+    vif_name = None
+    
     
     def __init__(self):
         
         self.builder = Gtk.Builder()
-        self.builder.add_from_file("/home/josefuentes/finalProjectGenome/interface/createvm.glade")
+        self.builder.add_from_file(os.getcwd() + "/src/interface/createvm.glade")
         
         self.window = self.builder.get_object("vm-create")  
         
@@ -62,27 +75,37 @@ class VmCreate():
         self.memory_label = self.builder.get_object("memory-label")
         
         #IMPORTS
-        #self.ram_label.set_text("Dom0 free RAM memory: " + SystemInfo.get_ram_mb() + " MB")
-        #self.cpu-label.set_text("Dom0 number of cpus: " + SystemInfo.get_cpus())
-        #self.cpu-label.set_text("Dom0 disk memory: " + SystemInfo.get_disk_memory() + " GB")
+        self.ram_label.set_text("Dom0 free RAM memory: " + str(SystemInfo.get_ram_mb()) + " MB")
+        self.cpu_label.set_text("Dom0 number of cpus: " + str(SystemInfo.get_cpus()))
+        self.memory_label.set_text("Dom0 disk memory: " + str(SystemInfo.get_disk_memory_gb()) + " GB")
         
         self.show()    
 
         self.builder.connect_signals({
             "on_vmm_newcreate_delete_event": Gtk.main_quit,
+            
             "on_inst_method_changed": self.on_inst_method_changed,
-            "on_create_finish_clicked": self.nothing,
+            
+            "on_create_finish_clicked": self.on_create_finish_clicked,
             "on_create_forward_clicked": self.on_create_forward_clicked,
             "on_create_back_clicked": self.on_create_back_clicked,
             "on_create_cancel_clicked": self.close,
             "on_create_pages_switch_page": self.on_create_pages_switch_page,
-            "on_create_vm_name_changed": self.nothing,
+            
             "on_tar_file_set": self.on_tar_file_set,
             "on_combobox_changed": self.on_combobox_changed,
+            
             "on_ram_spin_number_change": self.on_ram_spin_number_change,
             "on_cpus_spin_number_change": self.on_cpus_spin_number_change,
             "on_disk_spin_number_change": self.on_disk_spin_number_change,
-            "on_swap_spin_number_change": self.on_swap_spin_number_change
+            "on_swap_spin_number_change": self.on_swap_spin_number_change,
+            
+            "on_change_ip_entry": self.on_change_ip_entry,
+            "on_change_mac_entry": self.on_change_mac_entry,
+            "on_change_vif_entry": self.on_change_vif_entry,
+            
+            "on_change_name_entry": self.on_change_name_entry,
+            "on_change_rootpasswd_entry": self.on_change_rootpasswd_entry,
         })
 
 ################
@@ -135,6 +158,26 @@ class VmCreate():
         
     def on_swap_spin_number_change(self, widget):
         self.swap = str(int(widget.get_value())) 
+
+    def on_change_ip_entry(self, widget): 
+        self.ip = widget.get_text()
+        
+    def on_change_mac_entry(self, widget): 
+        self.mac = widget.get_text()
+        
+    def on_change_vif_entry(self, widget): 
+        self.vif = widget.get_text()
+        
+    def on_change_name_entry(self, widget):
+        self.name = widget.get_text()
+        print(self.name)
+
+    def on_change_rootpasswd_entry(self, widget):
+        self.root_passwd = widget.get_text()
+        print(self.root_passwd)
+
+    def on_create_finish_clicked():
+        print("Creating vm")
 
     def nothing(self, widget):
         print('hello')

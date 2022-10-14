@@ -2,6 +2,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk
+import os
 
 class vmAbout():
     
@@ -11,7 +12,7 @@ class vmAbout():
     def __init__(self):
         
         self.builder = Gtk.Builder()
-        self.builder.add_from_file("/home/josefuentes/finalProjectGenome/interface/about.glade")
+        self.builder.add_from_file(os.getcwd() + "/src/interface/about.glade")
         
         self.window = self.builder.get_object("vm-about")    
         self.show()    

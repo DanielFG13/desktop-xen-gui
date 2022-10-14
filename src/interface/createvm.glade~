@@ -17,6 +17,11 @@
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="adjustment_swap">
+    <property name="upper">9999</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkWindow" id="vm-create">
     <property name="width-request">500</property>
     <property name="height-request">500</property>
@@ -816,7 +821,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkLabel" id="phys-mem-label1">
+                                      <object class="GtkLabel" id="memory-label">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
                                         <property name="halign">start</property>
@@ -847,6 +852,7 @@
                                         <property name="can-focus">True</property>
                                         <property name="halign">start</property>
                                         <property name="width-chars">7</property>
+                                        <property name="adjustment">adjustment_swap</property>
                                         <property name="climb-rate">1</property>
                                         <signal name="value-changed" handler="on_swap_spin_number_change" swapped="no"/>
                                       </object>
@@ -965,6 +971,7 @@
                             <property name="halign">start</property>
                             <property name="margin-bottom">15</property>
                             <property name="width-chars">40</property>
+                            <signal name="changed" handler="on_change_ip_entry" swapped="no"/>
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
@@ -978,6 +985,7 @@
                             <property name="halign">start</property>
                             <property name="margin-bottom">15</property>
                             <property name="width-chars">40</property>
+                            <signal name="changed" handler="on_change_mac_entry" swapped="no"/>
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
@@ -991,6 +999,7 @@
                             <property name="halign">start</property>
                             <property name="margin-bottom">15</property>
                             <property name="width-chars">40</property>
+                            <signal name="changed" handler="on_change_vif_entry" swapped="no"/>
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
@@ -1041,7 +1050,7 @@
                               </packing>
                             </child>
                             <child>
-                              <!-- n-columns=2 n-rows=4 -->
+                              <!-- n-columns=2 n-rows=2 -->
                               <object class="GtkGrid" id="table4">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
@@ -1068,77 +1077,6 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label34">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">end</property>
-                                    <property name="hexpand">False</property>
-                                    <property name="label" translatable="yes">Method:</property>
-                                    <property name="use-markup">True</property>
-                                    <style>
-                                      <class name="vmm-lighter"/>
-                                    </style>
-                                  </object>
-                                  <packing>
-                                    <property name="left-attach">0</property>
-                                    <property name="top-attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="label33">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">end</property>
-                                    <property name="hexpand">False</property>
-                                    <property name="label" translatable="yes">OS:</property>
-                                    <property name="use-markup">True</property>
-                                    <style>
-                                      <class name="vmm-lighter"/>
-                                    </style>
-                                  </object>
-                                  <packing>
-                                    <property name="left-attach">0</property>
-                                    <property name="top-attach">1</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="summary-method">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="label">label</property>
-                                  </object>
-                                  <packing>
-                                    <property name="left-attach">1</property>
-                                    <property name="top-attach">2</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="create-vm-name">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="halign">start</property>
-                                    <property name="width-chars">40</property>
-                                    <signal name="changed" handler="on_create_vm_name_changed" swapped="no"/>
-                                  </object>
-                                  <packing>
-                                    <property name="left-attach">1</property>
-                                    <property name="top-attach">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel" id="summary-os">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">start</property>
-                                    <property name="label">label</property>
-                                  </object>
-                                  <packing>
-                                    <property name="left-attach">1</property>
-                                    <property name="top-attach">1</property>
-                                  </packing>
-                                </child>
-                                <child>
                                   <object class="GtkLabel" id="label11">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
@@ -1155,7 +1093,20 @@
                                   </object>
                                   <packing>
                                     <property name="left-attach">0</property>
-                                    <property name="top-attach">3</property>
+                                    <property name="top-attach">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkEntry" id="create-vm-name">
+                                    <property name="visible">True</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="halign">start</property>
+                                    <property name="width-chars">40</property>
+                                    <signal name="changed" handler="on_change_name_entry" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="left-attach">1</property>
+                                    <property name="top-attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -1163,12 +1114,18 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="halign">start</property>
-                                    <property name="margin-top">30</property>
+                                    <property name="margin-top">34</property>
+                                    <property name="visibility">False</property>
+                                    <property name="invisible-char">*</property>
                                     <property name="width-chars">40</property>
+                                    <property name="shadow-type">none</property>
+                                    <property name="primary-icon-name">dialog-password</property>
+                                    <property name="input-purpose">password</property>
+                                    <signal name="changed" handler="on_change_rootpasswd_entry" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="left-attach">1</property>
-                                    <property name="top-attach">3</property>
+                                    <property name="top-attach">1</property>
                                   </packing>
                                 </child>
                               </object>
@@ -1296,10 +1253,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkAdjustment" id="adjustment_swap">
-    <property name="upper">9999</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
   </object>
 </interface>
