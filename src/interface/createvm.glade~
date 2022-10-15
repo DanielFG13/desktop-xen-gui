@@ -1179,7 +1179,7 @@
                                     <property name="halign">end</property>
                                     <property name="margin-top">30</property>
                                     <property name="hexpand">False</property>
-                                    <property name="label" translatable="yes">root password:</property>
+                                    <property name="label" translatable="yes">Dom0 root password:</property>
                                     <property name="use-markup">True</property>
                                     <property name="use-underline">True</property>
                                     <property name="mnemonic-widget">create-vm-name</property>
@@ -1193,14 +1193,14 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkEntry" id="root-pass1">
+                                  <object class="GtkEntry" id="dom0-root-pass">
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="halign">start</property>
                                     <property name="margin-top">34</property>
                                     <property name="visibility">False</property>
                                     <property name="invisible-char">●</property>
-                                    <property name="width-chars">40</property>
+                                    <property name="width-chars">35</property>
                                     <property name="shadow-type">none</property>
                                     <property name="primary-icon-name">dialog-password</property>
                                     <property name="placeholder-text" translatable="yes">Dom0 root password</property>

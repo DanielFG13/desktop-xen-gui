@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from time import time
 import gi
 
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio
   
 import sys
 import os
@@ -35,6 +36,7 @@ class VmCreate():
     ram_label = None
     cpu_label = None
     memory_label = None
+    dialog = None
     
     #user selection/input
     method = 'deboostrap'
@@ -187,9 +189,13 @@ class VmCreate():
 
     def on_create_finish_clicked(self, widget):
         from messageDialogCreateVm import crateVmMessageDialog
-        dialog = crateVmMessageDialog(self.name)
-        start_vm("pruebaxen")
-        dialog.update_message("Virtual machine created.")
+        self.dialog = crateVmMessageDialog("Creating " + self.name + " virtual machine can take several minutes to complete")
+        proccess = Gio.Subprocess.new(["/usr/bin/pkexec", "/usr/lib/xen-4.16/bin/xl", "create" , "/etc/xen/pruebaxen.cfg"], 0)
+        proccess.wait_check_async(None, self._on_update_finished)
         
+    def _on_update_finished(self, subprocess, result):
+        subprocess.wait_check_finish(result)
+        self.dialog.update_message("Creation of " + self.name + " finalized")     
+        self.dialog.set_spinner_animation(False)  
         
 
