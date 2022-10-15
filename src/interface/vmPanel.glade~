@@ -254,7 +254,7 @@
                     <property name="tooltip-text" translatable="yes">Create a new virtual machine</property>
                     <property name="label" translatable="yes">New</property>
                     <property name="use-underline">True</property>
-                    <property name="icon-name">document-new</property>
+                    <property name="icon-name">list-add</property>
                     <signal name="clicked" handler="on_vm_new_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -281,7 +281,7 @@
                     <property name="is-important">True</property>
                     <property name="label" translatable="yes">_Open</property>
                     <property name="use-underline">True</property>
-                    <property name="icon-name">icon_console</property>
+                    <property name="icon-name">utilities-terminal</property>
                     <signal name="clicked" handler="on_vm_open_clicked" swapped="no"/>
                   </object>
                   <packing>

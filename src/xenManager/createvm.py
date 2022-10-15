@@ -11,14 +11,18 @@ import os
 from os import path
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 
-from utils.systeminfo import SystemInfo 
+from utils.system_info import * 
+from utils.create_image import *
+from utils.create_cfg import *
 
 ############
 # CONTANTS #
 ############
 
-DEBIAN_MIRROR = "http://httpredir.debian.org/debian/"
-UBUNTU_MIRROR = "http://archive.ubuntu.com/ubuntu/"
+DIST_DEBIAN_BUSTER = "Debian 10.0 -- Buster"
+DIST_DEBIAN_BULLSEYE = "Debian 11.0 -- Bullseye"
+DIST_UBUNTU_COSMIC = "Ubuntu 18.10 -- Comic"
+DIST_UBUNTU_EOAN = "Ubuntu 19.10 -- Eoan"
 
 class VmCreate():
     
@@ -31,13 +35,11 @@ class VmCreate():
     ram_label = None
     cpu_label = None
     memory_label = None
-    vm = None
-    root_passwd = None
     
     #user selection/input
     method = 'deboostrap'
     tar_file_path = None
-    url_mirror = DEBIAN_MIRROR
+    dist = DIST_DEBIAN_BULLSEYE
     ram = None
     cpus = None
     disk = None
@@ -45,6 +47,8 @@ class VmCreate():
     ip = None
     mac = None
     vif_name = None
+    name = None
+    root_passwd = None
     
     
     def __init__(self):
@@ -62,10 +66,14 @@ class VmCreate():
         
         self.txt_uri_file = self.builder.get_object("uri-file")
         
+        self.dom0_root_passwd_entry = self.builder.get_object("dom0-root-pass")
+        
         self.mirror_combobox = self.builder.get_object("install-url-combo")
         liststore = Gtk.ListStore(str)
-        liststore.append([DEBIAN_MIRROR])
-        liststore.append([UBUNTU_MIRROR])
+        liststore.append([DIST_DEBIAN_BULLSEYE])
+        liststore.append([DIST_DEBIAN_BUSTER])
+        liststore.append([DIST_UBUNTU_EOAN])
+        liststore.append([DIST_UBUNTU_COSMIC])
         self.mirror_combobox.set_model(liststore)
         self.mirror_combobox.set_entry_text_column(0)
         self.mirror_combobox.set_active(0)
@@ -74,11 +82,10 @@ class VmCreate():
         self.cpu_label = self.builder.get_object("cpu-label")
         self.memory_label = self.builder.get_object("memory-label")
         
-        #IMPORTS
-        self.ram_label.set_text("Dom0 free RAM memory: " + str(SystemInfo.get_ram_mb()) + " MB")
-        self.cpu_label.set_text("Dom0 number of cpus: " + str(SystemInfo.get_cpus()))
-        self.memory_label.set_text("Dom0 disk memory: " + str(SystemInfo.get_disk_memory_gb()) + " GB")
-        
+        self.ram_label.set_text("Dom0 free RAM memory: " + str(get_ram_mb()) + " MB")
+        self.cpu_label.set_text("Dom0 number of cpus: " + str(get_cpus()))
+        self.memory_label.set_text("Dom0 disk memory: " + str(get_disk_memory_gb()) + " GB")
+                
         self.show()    
 
         self.builder.connect_signals({
@@ -142,10 +149,14 @@ class VmCreate():
     def on_combobox_changed(self, combobox):
         treeiter = combobox.get_active_iter()
         model = combobox.get_model()
-        if(model[treeiter][0] == DEBIAN_MIRROR):
-            self.url_mirror = DEBIAN_MIRROR
-        if(model[treeiter][0] == UBUNTU_MIRROR):
-            self.url_mirror = UBUNTU_MIRROR
+        if(model[treeiter][0] == DIST_DEBIAN_BULLSEYE):
+            self.dist = 'bullseye'
+        if(model[treeiter][0] == DIST_DEBIAN_BUSTER):
+            self.dist = 'buster'
+        if(model[treeiter][0] == DIST_UBUNTU_COSMIC):
+            self.dist = 'cosmic'
+        if(model[treeiter][0] == DIST_UBUNTU_EOAN):
+            self.dist = 'eoan'
 
     def on_ram_spin_number_change(self, widget):
         self.ram = str(int(widget.get_value())) 
@@ -170,15 +181,15 @@ class VmCreate():
         
     def on_change_name_entry(self, widget):
         self.name = widget.get_text()
-        print(self.name)
 
     def on_change_rootpasswd_entry(self, widget):
         self.root_passwd = widget.get_text()
-        print(self.root_passwd)
 
-    def on_create_finish_clicked():
-        print("Creating vm")
-
-    def nothing(self, widget):
-        print('hello')
+    def on_create_finish_clicked(self, widget):
+        from messageDialogCreateVm import crateVmMessageDialog
+        dialog = crateVmMessageDialog(self.name)
+        start_vm("pruebaxen")
+        dialog.update_message("Virtual machine created.")
+        
+        
 
