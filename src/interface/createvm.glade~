@@ -192,7 +192,7 @@
                                     <property name="spacing">3</property>
                                     <child>
                                       <object class="GtkRadioButton" id="inst-method-deb">
-                                        <property name="label" translatable="yes">deboostrap</property>
+                                        <property name="label" translatable="yes">debootstrap</property>
                                         <property name="visible">True</property>
                                         <property name="can-focus">True</property>
                                         <property name="receives-default">False</property>
@@ -205,24 +205,6 @@
                                         <property name="expand">False</property>
                                         <property name="fill">False</property>
                                         <property name="position">0</property>
-                                      </packing>
-                                    </child>
-                                    <child>
-                                      <object class="GtkRadioButton" id="inst-method-cdeb">
-                                        <property name="label" translatable="yes">cdebootstrap</property>
-                                        <property name="visible">True</property>
-                                        <property name="can-focus">True</property>
-                                        <property name="receives-default">False</property>
-                                        <property name="halign">start</property>
-                                        <property name="use-underline">True</property>
-                                        <property name="draw-indicator">True</property>
-                                        <property name="group">inst-method-deb</property>
-                                        <signal name="toggled" handler="on_inst_method_changed" swapped="no"/>
-                                      </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">1</property>
                                       </packing>
                                     </child>
                                     <child>
@@ -451,8 +433,8 @@
                                             <property name="valign">start</property>
                                             <property name="hexpand">False</property>
                                             <property name="label">Only valid when using with the following methods:
-* deboostrap
-* cdeboostrap</property>
+* debootstrap
+* rinse</property>
                                             <property name="wrap">True</property>
                                             <property name="max-width-chars">45</property>
                                           </object>
@@ -1141,88 +1123,6 @@
                             <property name="expand">False</property>
                             <property name="fill">True</property>
                             <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="vbox8">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="margin-top">15</property>
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">12</property>
-                            <child>
-                              <object class="GtkLabel" id="summary-title1">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="label" translatable="yes">Installation requires root privileges</property>
-                                <property name="use-markup">True</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <!-- n-columns=2 n-rows=1 -->
-                              <object class="GtkGrid" id="table6">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                                <property name="halign">start</property>
-                                <property name="row-spacing">7</property>
-                                <property name="column-spacing">6</property>
-                                <child>
-                                  <object class="GtkLabel" id="label5">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="halign">end</property>
-                                    <property name="margin-top">30</property>
-                                    <property name="hexpand">False</property>
-                                    <property name="label" translatable="yes">Dom0 root password:</property>
-                                    <property name="use-markup">True</property>
-                                    <property name="use-underline">True</property>
-                                    <property name="mnemonic-widget">create-vm-name</property>
-                                    <style>
-                                      <class name="vmm-lighter"/>
-                                    </style>
-                                  </object>
-                                  <packing>
-                                    <property name="left-attach">0</property>
-                                    <property name="top-attach">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="dom0-root-pass">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="halign">start</property>
-                                    <property name="margin-top">34</property>
-                                    <property name="visibility">False</property>
-                                    <property name="invisible-char">●</property>
-                                    <property name="width-chars">35</property>
-                                    <property name="shadow-type">none</property>
-                                    <property name="primary-icon-name">dialog-password</property>
-                                    <property name="placeholder-text" translatable="yes">Dom0 root password</property>
-                                    <property name="input-purpose">password</property>
-                                  </object>
-                                  <packing>
-                                    <property name="left-attach">1</property>
-                                    <property name="top-attach">0</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
                           </packing>
                         </child>
                       </object>

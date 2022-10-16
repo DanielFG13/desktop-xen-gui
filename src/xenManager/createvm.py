@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from math import dist
 from time import time
 import gi
 
@@ -14,7 +15,6 @@ sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 
 from utils.system_info import * 
 from utils.create_image import *
-from utils.create_cfg import *
 
 ############
 # CONTANTS #
@@ -39,9 +39,9 @@ class VmCreate():
     dialog = None
     
     #user selection/input
-    method = 'deboostrap'
+    method = 'debootstrap'
     tar_file_path = None
-    dist = DIST_DEBIAN_BULLSEYE
+    dist = 'bullseye'
     ram = None
     cpus = None
     disk = None
@@ -179,7 +179,7 @@ class VmCreate():
         self.mac = widget.get_text()
         
     def on_change_vif_entry(self, widget): 
-        self.vif = widget.get_text()
+        self.vif_name = widget.get_text()
         
     def on_change_name_entry(self, widget):
         self.name = widget.get_text()
@@ -190,7 +190,8 @@ class VmCreate():
     def on_create_finish_clicked(self, widget):
         from messageDialogCreateVm import crateVmMessageDialog
         self.dialog = crateVmMessageDialog("Creating " + self.name + " virtual machine can take several minutes to complete")
-        proccess = Gio.Subprocess.new(["/usr/bin/pkexec", "/usr/lib/xen-4.16/bin/xl", "create" , "/etc/xen/pruebaxen.cfg"], 0)
+        proccess = create_vm(self.name, self.disk, self.ram, self.swap, self.cpus, self.ip, self.mac, 
+                             self.root_passwd, self.method, self.dist, self.vif_name)
         proccess.wait_check_async(None, self._on_update_finished)
         
     def _on_update_finished(self, subprocess, result):
