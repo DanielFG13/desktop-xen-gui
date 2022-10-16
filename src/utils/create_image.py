@@ -27,19 +27,3 @@ def create_vm(hostname, disk, ram, swap, vcpus, ip, mac, rootpass, inst_method, 
                                 "--netmask="+ netmask,
                                 "--force"], 0)
 
-
-#def create_vm(hostname, disk, ram, swap, vcpus, ip, mac, rootpass, inst_method, dist, vifname):
-#    proccess = subprocess.Popen(["sudo", "xen-create-image", 
-#                         "--hostname=" + hostname, 
-#                         "--size=" + disk + "GB", 
-#                         "--memory="+ ram + "MB", 
-#                         "--swap="+ swap + "MB",
-#                         "--ip=" + ip, 
-#                         "--vcpus="+vcpus, 
-#                         "--mac="+mac, 
-#                         "--vifname="+vifname,
-#                         "--password=" + rootpass,
-#                         "--force"])
-#    streamdata = proccess.communicate()[1]
-#    print(proccess.returncode, streamdata)
-#    return [proccess.returncode, streamdata] 
