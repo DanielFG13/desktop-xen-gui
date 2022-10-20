@@ -1,9 +1,7 @@
-from concurrent.futures import process
 import threading
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
-from gi.repository import GdkPixbuf
 
 import sys
 import os
@@ -21,7 +19,11 @@ class AppWindow(Gtk.ApplicationWindow):
     virtualMachines = None
     real_time_info = None
     is_thread_xentop_running = True
-
+    vm_list = None
+    list_store = None
+    selected_vm = None
+    tree_iterations = {}
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -31,15 +33,38 @@ class AppWindow(Gtk.ApplicationWindow):
         self.main_window = self.builder.get_object("vm-manager")
         
         self.vm_list = self.builder.get_object("vm-list")
+        
+        self.list_store = Gtk.ListStore(str, str, str, str, str, str)
+        vms = getAllVirtualMachinesName()
+        
+        self.vm_list.set_model(self.list_store)
+        self.tree_iterations['Domain-0'] = self.list_store.append(['Domain-0', 'running', '0', '0', '0', '0'])
+        for vm in vms:
+            treeiter = self.list_store.append([vm, 'shutdown', '0', '0', '0', '0'])
+            self.tree_iterations[vm] = treeiter
+        
+        for i, column_title in enumerate(
+            ["Domains", "STATE", "CPU(sec)", "CPU(%)",  "Memory(kb)", "Memory(%)"]
+        ):
+            if column_title == "Domains":
+                renderer = Gtk.CellRendererText()
+                column = Gtk.TreeViewColumn(column_title, renderer, text=i)
+                column.set_fixed_width(200)
+            else:
+                renderer = Gtk.CellRendererText()
+                column = Gtk.TreeViewColumn(column_title, renderer, text=i)
+                column.set_fixed_width(100)
+            self.vm_list.append_column(column)
+        
   
         self.builder.connect_signals({
                                       "on_menu_help_about_activate": self.on_menu_help_about_activate,
                                       "on_vm_manager_configure_event": self.nothing,
                                       "on_menu_file_add_connection_activate": self.nothing,
-                                      "on_vm_manager_delete_event": Gtk.main_quit,
+                                      "on_vm_manager_delete_event": self.on_vm_manager_delete_event,
                                       "on_vm_list_button_press_event": self.nothing,
                                       "on_vm_list_key_press_event": self.nothing,
-                                      "on_vm_list_row_activated": self.nothing,
+                                      "on_vm_list_row_activated": self.on_vm_list_row_activated,
                                       "on_vm_shutdown_clicked": self.nothing,
                                       "on_vm_pause_clicked": self.nothing,
                                       "on_vm_run_clicked": self.init_vm_list,
@@ -71,10 +96,14 @@ class AppWindow(Gtk.ApplicationWindow):
     def show(self):
         self.main_window.show_all()
         Gtk.main()
+      
+    def on_vm_manager_delete_event(self, widget, event):
+        self.is_thread_xentop_running = False
+        Gtk.main_quit()  
         
     def close(self):
         self.main_window.close()
-        sys.exit()
+        sys.exit(0)
     
     def on_menu_help_about_activate(self, widget):
         from about import vmAbout
@@ -83,20 +112,44 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_vm_new_clicked(self, widget):
         from createvm import VmCreate
         VmCreate()
-        self.is_thread_xentop_running = False
         
+        
+    def on_vm_list_row_activated(self, treeview, path, column):
+        model = treeview.get_model()
+        treeiter = model.get_iter(path)
+        self.selected_vm = model.get_value(treeiter, 0)
+        print(self.selected_vm)
+    
     def init_vm_list(self, widget):
         def callback():
             process_xentop = real_time_data() 
             for line in iter(process_xentop.stdout.readline, b''):
-                print(line)
+                raw_data = " ".join(str(line).split()).split(" ")
+                data = raw_data[1:7]
+                data[1] = self.state_word(raw_data[1])
+                if(data[0] == 'NAME'):
+                    continue
+                self.list_store.set_row(self.tree_iterations[data[0]], data)
                 if not self.is_thread_xentop_running:
                     os.killpg(os.getpgid(process_xentop.pid), signal.SIGTERM)
                     break
         thread_xentop = threading.Thread(target=callback)
         thread_xentop.start()
 
-        
+    def state_word(self, state):
+        if('r' in state):
+            return 'running'
+        if('b' in state):
+            return 'blocked'
+        if('p' in state):
+            return 'paused'
+        if('s' in state):
+            return 'shutdown'
+        if('c' in state):
+            return 'crashed'
+        if('d' in state):
+            return 'dying'
+    
     def nothing(self, widget):
         print("hello")
             
