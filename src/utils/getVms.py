@@ -1,16 +1,15 @@
 #!/usr/bin/python3
-print()
-
 import subprocess
-from gi.repository import Gio
+import os
+import signal
 
 def getAllVirtualMachinesName():
-    list_of_files = subprocess.run(['ls', '/etc/xen'], capture_output=True, text=True)
+    process = subprocess.Popen(['ls', '/etc/xen'], stdout=subprocess.PIPE)
+    print(process.pid)
+    stdout = str(process.communicate()[0])[1:].split('\\n')
+    process.terminate()
     vms = []
-    for file in list_of_files.stdout.split('\n'):
+    for file in stdout:
         if '.cfg' in file:
             vms.append(file[0:-4])
     return vms
-
-    
-    
