@@ -1,5 +1,4 @@
-import subprocess
-import os
+from gi.repository import Gio
 
 def destroy_vm(name):
-    subprocess.run(["/usr/bin/pkexec", "/usr/lib/xen-4.16/bin/xl", "destroy" , name], stdout=subprocess.PIPE)
+    return Gio.Subprocess.new(["/usr/bin/pkexec", "/usr/lib/xen-4.16/bin/xl", "destroy" , name], 0)

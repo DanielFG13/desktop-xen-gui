@@ -307,22 +307,6 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkToggleToolButton" id="vm-pause">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="has-tooltip">True</property>
-                    <property name="tooltip-text" translatable="yes">Pause the virtual machine</property>
-                    <property name="label" translatable="yes">_Pause</property>
-                    <property name="use-underline">True</property>
-                    <property name="icon-name">media-playback-pause</property>
-                    <signal name="clicked" handler="on_vm_pause_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="homogeneous">True</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkMenuToolButton" id="vm-shutdown">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
@@ -341,8 +325,7 @@
                   <object class="GtkToolButton" id="vm-monitor">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="has-tooltip">True</property>
-                    <property name="tooltip-text" translatable="yes">Power on the virtual machine</property>
+                    <property name="tooltip-text" translatable="yes">Display useful information about the domains</property>
                     <property name="label" translatable="yes">_Run</property>
                     <property name="use-underline">True</property>
                     <property name="icon-name">utilities-system-monitor</property>
@@ -376,6 +359,7 @@
                         <property name="headers-clickable">False</property>
                         <property name="reorderable">True</property>
                         <property name="show-expanders">False</property>
+                        <property name="activate-on-single-click">True</property>
                         <signal name="key-press-event" handler="on_vm_list_key_press_event" swapped="no"/>
                         <signal name="row-activated" handler="on_vm_list_row_activated" swapped="no"/>
                         <child internal-child="selection">

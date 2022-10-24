@@ -12,6 +12,8 @@ sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 from utils.getVms import *
 from utils.xentop import *
 from utils.create_cfg import *
+from utils.destroy import *
+from utils.open_vm import *
 
 class AppWindow(Gtk.ApplicationWindow):
     
@@ -48,7 +50,7 @@ class AppWindow(Gtk.ApplicationWindow):
                 state = 'running'
             else:
                 state = 'shutdown'    
-            treeiter = self.list_store.append([vm, state, '0', '0', '0', '0'])
+            treeiter = self.list_store.append([vm, state, 'N/A', 'N/A', 'N/A', 'N/A'])
             self.tree_iterations[vm] = treeiter
         
         for i, column_title in enumerate(
@@ -73,10 +75,9 @@ class AppWindow(Gtk.ApplicationWindow):
                                       "on_vm_list_button_press_event": self.nothing,
                                       "on_vm_list_key_press_event": self.nothing,
                                       "on_vm_list_row_activated": self.on_vm_list_row_activated,
-                                      "on_vm_shutdown_clicked": self.nothing,
-                                      "on_vm_pause_clicked": self.nothing,
+                                      "on_vm_shutdown_clicked": self.stop_virtual_machine,
                                       "on_vm_run_clicked": self.start_virtual_machine,
-                                      "on_vm_open_clicked": self.nothing,
+                                      "on_vm_open_clicked": self.open_virtual_machine,
                                       "on_vm_new_clicked": self.on_vm_new_clicked,
                                       "on_vm_monitor_clicked": self.monitor_vm_list,
                                       
@@ -121,8 +122,7 @@ class AppWindow(Gtk.ApplicationWindow):
     def on_vm_new_clicked(self, widget):
         from createvm import VmCreate
         VmCreate()
-        
-        
+                
     def on_vm_list_row_activated(self, treeview, path, column):
         model = treeview.get_model()
         treeiter = model.get_iter(path)
@@ -131,12 +131,30 @@ class AppWindow(Gtk.ApplicationWindow):
     
     def start_virtual_machine(self, widget):
         vm = self.selected_vm
-        print(vm)
         if(vm == None):
             return
         if(not(vm == 'Domain-0') and (self.list_store.get_value(self.tree_iterations[vm], 1) == 'shutdown')):
             start_vm(self.selected_vm)
+            
+    def stop_virtual_machine(self, widget):
+        vm = self.selected_vm
+        if(vm == None):
+            return
+        if(not(vm == 'Domain-0') and not(self.list_store.get_value(self.tree_iterations[vm], 1) == 'shutdown')):
+            process = destroy_vm(self.selected_vm)
+            process.wait_check_async(None, self._on_destroy_finished)
     
+    def _on_destroy_finished(self, subprocess, result):
+        subprocess.wait_check_finish(result)
+        self.list_store.set_row(self.tree_iterations[self.selected_vm], [self.selected_vm, 'shutdown', 'N/A', 'N/A', 'N/A', 'N/A'])
+        
+    def open_virtual_machine(self, widget):
+        vm = self.selected_vm
+        if(vm == None):
+            return
+        if(not(vm == 'Domain-0') and not(self.list_store.get_value(self.tree_iterations[vm], 1) == 'shutdown')):
+            open_vm(self.selected_vm)
+        
     def monitor_vm_list(self, widget):
         def callback():
             process_xentop = real_time_data() 
@@ -145,7 +163,6 @@ class AppWindow(Gtk.ApplicationWindow):
                 raw_data = " ".join(str(line).replace('b\'', '').split()).split(" ")
                 data = raw_data[0:6]
                 data[1] = self.state_word(data[1])
-                print(data)
                 if(data[0] == 'NAME'):
                     continue
                 if(not (data[0] in self.vms)):
