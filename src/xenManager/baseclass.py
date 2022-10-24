@@ -1,7 +1,7 @@
 import threading
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 import sys
 import os
@@ -150,12 +150,15 @@ class AppWindow(Gtk.ApplicationWindow):
                     continue
                 if(not (data[0] in self.vms)):
                     continue
-                self.list_store.set_row(self.tree_iterations[data[0]], data)
+                GLib.idle_add(self.update_tree_view, data)
                 if not self.is_thread_xentop_running:
                     os.killpg(os.getpgid(process_xentop.pid), signal.SIGKILL)
                     break
         thread_xentop = threading.Thread(target=callback)
         thread_xentop.start()
+
+    def update_tree_view(self, data):
+        self.list_store.set_row(self.tree_iterations[data[0]], data)
 
     def state_word(self, state):
         if('r' in state):
