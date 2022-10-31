@@ -45,10 +45,9 @@ class VmCreate():
     ram = None
     cpus = None
     disk = None
-    swap = None
     ip = None
-    mac = None
-    vif_name = None
+    ip_configuration = 'static'
+    network_mode = 'bridge'
     name = None
     root_passwd = None
     
@@ -107,11 +106,10 @@ class VmCreate():
             "on_ram_spin_number_change": self.on_ram_spin_number_change,
             "on_cpus_spin_number_change": self.on_cpus_spin_number_change,
             "on_disk_spin_number_change": self.on_disk_spin_number_change,
-            "on_swap_spin_number_change": self.on_swap_spin_number_change,
             
+            "on_change_ip_configuration": self.on_change_ip_configuration,
+            "on_change_network_mode": self.on_change_network_mode,
             "on_change_ip_entry": self.on_change_ip_entry,
-            "on_change_mac_entry": self.on_change_mac_entry,
-            "on_change_vif_entry": self.on_change_vif_entry,
             
             "on_change_name_entry": self.on_change_name_entry,
             "on_change_rootpasswd_entry": self.on_change_rootpasswd_entry,
@@ -168,18 +166,17 @@ class VmCreate():
         
     def on_disk_spin_number_change(self, widget):
         self.disk = str(int(widget.get_value())) 
-        
-    def on_swap_spin_number_change(self, widget):
-        self.swap = str(int(widget.get_value())) 
+
+    def on_change_ip_configuration(self, widget):
+        if widget.get_active():
+            self.ip_configuration = widget.get_label()
+     
+    def on_change_network_mode(self, widget):
+        if widget.get_active():
+            self.network_mode = widget.get_label()
 
     def on_change_ip_entry(self, widget): 
         self.ip = widget.get_text()
-        
-    def on_change_mac_entry(self, widget): 
-        self.mac = widget.get_text()
-        
-    def on_change_vif_entry(self, widget): 
-        self.vif_name = widget.get_text()
         
     def on_change_name_entry(self, widget):
         self.name = widget.get_text()
@@ -190,8 +187,8 @@ class VmCreate():
     def on_create_finish_clicked(self, widget):
         from messageDialogCreateVm import crateVmMessageDialog
         self.dialog = crateVmMessageDialog("Creating " + self.name + " virtual machine can take several minutes to complete")
-        proccess = create_vm(self.name, self.disk, self.ram, self.swap, self.cpus, self.ip, self.mac, 
-                             self.root_passwd, self.method, self.dist, self.vif_name)
+        proccess = create_vm(self.name, self.disk, self.ram, self.cpus, self.ip, 
+                             self.root_passwd, self.method, self.dist, self.network_mode, self.ip_configuration)
         proccess.wait_check_async(None, self._on_update_finished)
         
     def _on_update_finished(self, subprocess, result):

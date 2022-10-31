@@ -195,3 +195,6 @@ class AppWindow(Gtk.ApplicationWindow):
         print("hello")
             
 AppWindow()
+
+#nameserver 2806:1020:ffff:3::2
+#nameserver 2806:1030:ffff:2::e
